@@ -1,1 +1,2 @@
 # template-repo
+In this project I will prove my skills in using json, aswell as using SOLID principles or atleast some of them since this is topic I will have to revisit alot of times as well as trying to not do too much of tight coupling of my modules and doing more composition than inheritance in my objects

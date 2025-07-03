@@ -1,2 +1,3 @@
 import '../styles/style.css'
-console.log("Hello world")
+import { projects } from './todo-projects'
+console.log(projects.projectsArray)

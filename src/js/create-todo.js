@@ -1,4 +1,4 @@
-export class ToDo{
+export class ToDoCreator{
   constructor(checkList,title,description,dueDate,priority){
     this.checkList = checkList
     this.title = title

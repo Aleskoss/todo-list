@@ -1,5 +1,6 @@
-import { projects } from "./todo-projects"
-export class ToDoCreator{
+import { projects ,projectOpener } from "./todo-projects"
+
+export class ToDo{
   constructor(title,description,dueDate,priority){
     this.checkList = false
     this.title = title
@@ -10,10 +11,14 @@ export class ToDoCreator{
 }
 
 const toDoChecker = {
-  checkedToDo(item,project){
-    if(item.checkList === true){
-      project.toDos.splice(project.toDos.indexOf(item),1)
-    }
+  deleteCheckedToDo(){
+    const currentProject = projectOpener("default")
+    currentProject.toDos.map(item => {
+      if(item.checkList === true){
+        currentProject.toDos.splice(currentProject.toDos.indexOf(item),1)
+      }
+    })
 }}
 
-Object.assign(ToDoCreator.prototype,toDoChecker)
+
+Object.assign(ToDo,toDoChecker)

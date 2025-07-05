@@ -1,9 +1,7 @@
-import { ToDoCreator } from "./create-todo"
+import { ToDo } from "./create-todo"
 
-export const projects = (() => {
-  return []
-})()
-export class ProjectCreator {
+export class Projects {
+  static projects = []
   constructor(title){
     this.title = title
     this.toDos = []
@@ -11,29 +9,27 @@ export class ProjectCreator {
 }
 
 export const toDoAdder = (title) => {
-  const projectTitle = title.toLowerCase()
-  projects.map(item => {
-    if(item.title === projectTitle){
-      item.toDos.push(new ToDoCreator("sadasd","sadawd","sadasd","sadsad"))
-    }
-  })
+  const currentProject = projectOpener(title)
+  currentProject.toDos.push(new ToDo("sadasd","sadawd","sadasd","sadsad"))
 }
 export const projectAdder = (title) => {
-  projects.push(new ProjectCreator(title.toLowerCase()))  
+  Projects.projects.push(new Projects(title.toLowerCase()))  
 }
 export const projectOpener = (title) => {
+  let currentProject
   const openedProject = title.toLowerCase()
-  projects.map(projectItem => {
+  Projects.projects.map(projectItem => {
     if(projectItem.title === openedProject){
-      projectItem.toDos.map(toDoItem => toDoItem.checkedToDo(toDoItem,projectItem))
-      
+      currentProject = projectItem
     }
   })
+  return currentProject
 }
 
+
 projectAdder("Default")
+projectAdder("Second")
+projectAdder("Third")
 toDoAdder("Default")
 toDoAdder("Default")
-projects[0].toDos[0].checkList = true
-projectOpener("Default")
-console.log(projects)
+

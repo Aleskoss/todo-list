@@ -1,3 +1,7 @@
 import '../styles/style.css'
-import { projects } from './todo-projects'
+import { Projects,projectOpener } from './todo-projects'
+import { ToDo } from './create-todo'
+const currentProject = projectOpener("default")
+ToDo.deleteCheckedToDo()
+console.log(Projects.projects)
 

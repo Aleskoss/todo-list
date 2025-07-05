@@ -1,6 +1,7 @@
 import '../styles/style.css'
 import { Projects,projectOpener } from './todo-projects'
 import { ToDo } from './create-todo'
+import { DOM } from './dom-manipulator'
 const currentProject = projectOpener("default")
 Projects.projects[0].toDos[0].checkList = true
 Projects.projects[0].toDos[1].priority = 3
@@ -11,4 +12,6 @@ ToDo.sortByPriority(projectOpener("default"))
 ToDo.deleteCheckedToDo(projectOpener("default"))
 ToDo.setPriority(ToDo.findToDo(projectOpener("default"),"hello"))
 console.log(Projects.projects)
+DOM.firstLoadInit()
+DOM.openToDo()
 

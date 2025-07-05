@@ -8,8 +8,7 @@ export class Projects {
   }
 }
 
-export const toDoAdder = (title) => {
-  const currentProject = projectOpener(title)
+export const toDoAdder = (currentProject) => {
   currentProject.toDos.push(new ToDo("sadasd","sadawd","sadasd","sadsad"))
 }
 export const projectAdder = (title) => {
@@ -30,6 +29,10 @@ export const projectOpener = (title) => {
 projectAdder("Default")
 projectAdder("Second")
 projectAdder("Third")
-toDoAdder("Default")
-toDoAdder("Default")
+toDoAdder(projectOpener("Default"))
+toDoAdder(projectOpener("Default"))
+toDoAdder(projectOpener("Default"))
+toDoAdder(projectOpener("Default"))
+toDoAdder(projectOpener("Default"))
+toDoAdder(projectOpener("Default"))
 

@@ -1,8 +1,10 @@
-import { projectOpener, Projects } from "./todo-projects";
+import { projectOpener, Projects, toDoAdder } from "./todo-projects";
+import { ToDo } from "./create-todo";
 export class DOMManipulator{
   static #currentProject
   content = document.querySelector('#content') 
-  static firstLoadInit(){
+  static loadProjects(){
+    console.log(Projects.projects)
     this.#currentProject = ""
     for(let i = 0; i < Projects.projects.length; i++){
     let div = document.createElement('div')
@@ -14,17 +16,16 @@ export class DOMManipulator{
   }
   static openProject(target){
     if(this.#currentProject === ""){
-       this.#currentProject = target
-      if(this.targetCheck(this.#currentProject)){
-      while(content.lastChild){
+       while(content.lastChild){
         content.removeChild(content.lastChild)
       }
-      this.addToDoButton()
+      this.#currentProject = target
       this.LoadToDos()
+      this.addToDoButton()
+      this.saveToDoButton()
       }
     }
-    }
-  static targetCheck(target){
+  static checkIfProjectInProjects(target){
     let conditionCheck = Projects.projects.reduce((accumulator,currentVal) => {
       if(target === currentVal.title){
         accumulator = true
@@ -33,27 +34,19 @@ export class DOMManipulator{
     },false)
     return conditionCheck
   }
-  static changeToDo(event){
-    const currentProject = projectOpener(this.#currentProject)
-    const currentToDo = event.target.textContent
-    console.log(event.target)
-    currentProject.toDos.map(item => {
-      if(item.title === currentToDo){
-        item.title = "hell"
-      }
-    })
-  }
   static addToDoButton(){
-    let addBtn = document.createElement('button')
+    const addBtn = document.createElement('button')
     addBtn.textContent = 'Add ToDo'
     addBtn.id = 'add-btn'
     document.body.appendChild(addBtn)
     addBtn.addEventListener('click',() => {
-      console.log(projectOpener(this.#currentProject))
       this.addToDoInputs()
     })
   }
   static LoadToDos(){
+     while(content.lastChild){
+        content.removeChild(content.lastChild)
+      }
     let currentProject = projectOpener(this.#currentProject)
       currentProject.toDos.map(item => {
       this.addToDoInputs(item.title,item.description,item.priority,item.dueDate)
@@ -81,5 +74,24 @@ export class DOMManipulator{
       toDoDiv.appendChild(dueDate)
       toDoDiv.appendChild(checkList)
       content.appendChild(toDoDiv)
+  }
+  static saveToDoButton(){
+    const saveBtn = document.createElement('button')
+    saveBtn.textContent = 'Save'
+    saveBtn.id = 'save-btn'
+    document.body.appendChild(saveBtn)
+    saveBtn.addEventListener('click',() => {
+      let containers = content.querySelectorAll('div')
+      this.saveToDos(containers)
+    })
+  }
+  static saveToDos(container){
+    console.log(container)
+    let currentProject = projectOpener(this.#currentProject)
+    currentProject.toDos.splice(0,currentProject.toDos.length)
+    container.forEach(element => {
+      console.log(element.childNodes[0].value)
+      currentProject.toDos.push(new ToDo(element.childNodes[0].value,element.childNodes[1].value,element.childNodes[3].value))
+    });
   }
 }

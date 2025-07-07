@@ -1,21 +1,21 @@
-import { projectOpener, Projects, toDoAdder } from "./todo-projects";
-import { ToDo } from "./create-todo";
+import { projectOpener, Projects, projectAdder} from "./todo-projects";
+import { ToDo, sortByPriority} from "./create-todo";
 export class DOMManipulator{
   static #currentProject
   content = document.querySelector('#content') 
   static loadProjects(){
-    console.log(Projects.projects)
     this.#currentProject = ""
+    this.addProject()
     for(let i = 0; i < Projects.projects.length; i++){
     let div = document.createElement('div')
     div.style.width = '200px'
-    div.textContent = Projects.projects[i].title
+    div.textContent = Projects.projects[i].title.replace(Projects.projects[i].title[0],Projects.projects[i].title[0].toUpperCase())
     div.id = Projects.projects[i].title
     content.appendChild(div)
     }
   }
   static openProject(target){
-    if(this.#currentProject === ""){
+    if(this.#currentProject === "" && this.checkIfProjectInProjects(target)){
        while(content.lastChild){
         content.removeChild(content.lastChild)
       }
@@ -27,7 +27,7 @@ export class DOMManipulator{
     }
   static checkIfProjectInProjects(target){
     let conditionCheck = Projects.projects.reduce((accumulator,currentVal) => {
-      if(target === currentVal.title){
+      if(target.toLowerCase() === currentVal.title.toLowerCase()){
         accumulator = true
       }
       return accumulator
@@ -63,11 +63,22 @@ export class DOMManipulator{
       const priority = document.createElement('input')
       priority.type = 'button'
       priority.value = priorityValue
+      priority.addEventListener('click',(event)=>{
+        if(parseInt(event.target.value) < 3){
+          event.target.value = parseInt(event.target.value) + 1
+          this.saveToDos()
+          sortByPriority(projectOpener(this.#currentProject))
+          this.LoadToDos()
+        }
+      })
       const dueDate = document.createElement('input')
       dueDate.type = 'time'
       dueDate.value = dueDateValue
       const checkList = document.createElement('input')
       checkList.type = 'radio'
+      checkList.addEventListener('click', () => {
+        this.checkIfChecked(checkList)
+      })
       toDoDiv.appendChild(title)
       toDoDiv.appendChild(description)
       toDoDiv.appendChild(priority)
@@ -81,17 +92,39 @@ export class DOMManipulator{
     saveBtn.id = 'save-btn'
     document.body.appendChild(saveBtn)
     saveBtn.addEventListener('click',() => {
-      let containers = content.querySelectorAll('div')
-      this.saveToDos(containers)
+      this.saveToDos()
     })
   }
-  static saveToDos(container){
-    console.log(container)
+  static saveToDos(){
+    let containers = content.querySelectorAll('div')
     let currentProject = projectOpener(this.#currentProject)
     currentProject.toDos.splice(0,currentProject.toDos.length)
-    container.forEach(element => {
-      console.log(element.childNodes[0].value)
-      currentProject.toDos.push(new ToDo(element.childNodes[0].value,element.childNodes[1].value,element.childNodes[3].value))
+    containers.forEach(element => {
+      currentProject.toDos.push(new ToDo(element.childNodes[0].value,element.childNodes[1].value,element.childNodes[2].value,element.childNodes[3].value))
     });
+  }
+  static checkIfChecked(target){
+    if(target.checked === true){
+      target.parentNode.remove()
+    }
+  }
+  static addProject(){
+    const projectAddBtn = document.createElement('button')
+    projectAddBtn.textContent = 'Add Project'
+    const projectName = document.createElement('input')
+    projectName.name = 'project-name'
+    content.appendChild(projectName)
+    content.appendChild(projectAddBtn)
+    projectAddBtn.addEventListener('click',() => {
+      if(this.checkIfProjectInProjects(projectName.value) || !(projectName.value)){
+        projectName.value = 'Try Again'
+      }else{
+        projectAdder(projectName.value)
+        while(content.lastChild){
+          content.removeChild(content.lastChild)
+        }
+        this.loadProjects()
+      }
+    })
   }
 }

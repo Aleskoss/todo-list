@@ -27,6 +27,4 @@ export const projectOpener = (title) => {
 
 
 projectAdder("Default")
-projectAdder("Second")
-projectAdder("Third")
 

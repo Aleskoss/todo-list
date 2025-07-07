@@ -29,10 +29,4 @@ export const projectOpener = (title) => {
 projectAdder("Default")
 projectAdder("Second")
 projectAdder("Third")
-toDoAdder(projectOpener("Default"))
-toDoAdder(projectOpener("Default"))
-toDoAdder(projectOpener("Default"))
-toDoAdder(projectOpener("Default"))
-toDoAdder(projectOpener("Default"))
-toDoAdder(projectOpener("Default"))
 

@@ -1,11 +1,14 @@
 import { projects ,projectOpener } from "./todo-projects"
 
 export class ToDo{
-  constructor(title,description,dueDate,priority){
+  constructor(title,description,dueDate){
     this.checkList = false
     this.title = title
+    this.titleID = crypto.randomUUID()
     this.description = description
+    this.descriptionID = crypto.randomUUID()
     this.dueDate = dueDate
+    this.dueDateID = crypto.randomUUID()
     this.priority = 1
   }
 }

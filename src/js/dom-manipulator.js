@@ -1,5 +1,7 @@
 import { projectOpener, Projects, projectAdder} from "./todo-projects";
-import { ToDo, sortByPriority} from "./create-todo";
+import { ToDo } from "./create-todo";
+import { isPast, getDay } from "date-fns";
+import { DateFormatter } from "./date-formatter";
 export class DOMManipulator{
   static #currentProject
   content = document.querySelector('#content') 
@@ -9,10 +11,27 @@ export class DOMManipulator{
     this.#currentProject = "default"
     this.addProject()
     for(let i = 0; i < Projects.projects.length; i++){
-    let div = document.createElement('div')
+    const currentDueDateArr = Projects.projects[i].dueDate.split('-')
+    const dateValue = new Date(currentDueDateArr[0],currentDueDateArr[1]-1,currentDueDateArr[2])
+    const daysArr = ['Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota','Neděle']
+    const div = document.createElement('div')
+    const projectPara = document.createElement('p')
+    const projectDueDatePara = document.createElement('p')
+    const dayOfTheDate = document.createElement('p')
     div.style.width = '200px'
-    div.textContent = Projects.projects[i].title.replace(Projects.projects[i].title[0],Projects.projects[i].title[0].toUpperCase())
-    div.id = Projects.projects[i].title
+    div.style.height = '200px'
+    div.id = Projects.projects[i].title.toLowerCase()
+    projectPara.textContent = Projects.projects[i].title.replace(Projects.projects[i].title[0],Projects.projects[i].title[0].toUpperCase())
+    projectDueDatePara.textContent = currentDueDateArr.reverse().join('.')
+    if(isPast(dateValue)){
+      projectDueDatePara.style.color = 'red'
+    }else{
+      projectDueDatePara.style.color = 'green'
+    }
+    dayOfTheDate.textContent = daysArr[getDay(dateValue)-1]
+    div.appendChild(projectPara)
+    div.appendChild(projectDueDatePara)
+    div.appendChild(dayOfTheDate)
     content.appendChild(div)
     }
   }
@@ -95,13 +114,17 @@ export class DOMManipulator{
     projectAddBtn.textContent = 'Add Project'
     const projectName = document.createElement('input')
     projectName.name = 'project-name'
+    const projectDueDate = document.createElement('input')
+    projectDueDate.type = "date"
+    projectDueDate.value = DateFormatter.currentDayPlusOne()
     content.appendChild(projectName)
+    content.appendChild(projectDueDate)
     content.appendChild(projectAddBtn)
     projectAddBtn.addEventListener('click',() => {
       if(this.checkIfProjectInProjects(projectName.value) || !(projectName.value)){
         projectName.value = 'Try Again'
       }else{
-        projectAdder(projectName.value)
+        projectAdder(projectName.value,projectDueDate.value)
         while(content.lastChild){
           content.removeChild(content.lastChild)
         }

@@ -1,9 +1,11 @@
 import { ToDo } from "./create-todo"
+import { DateFormatter } from "./date-formatter"
 
 export class Projects {
   static projects = []
-  constructor(title){
+  constructor(title,dueDate){
     this.title = title
+    this.dueDate = dueDate
     this.toDos = []
   }
 }
@@ -11,8 +13,8 @@ export class Projects {
 export const toDoAdder = (currentProject) => {
   currentProject.toDos.push(new ToDo("sadasd","sadawd","sadasd","sadsad"))
 }
-export const projectAdder = (title) => {
-  Projects.projects.push(new Projects(title.toLowerCase()))  
+export const projectAdder = (title,dueDate) => {
+  Projects.projects.push(new Projects(title.toLowerCase(),dueDate))  
 }
 export const projectOpener = (title) => {
   let currentProject
@@ -34,5 +36,5 @@ const toDoSaver = {
 }
 
 Object.assign(Projects,toDoSaver)
-projectAdder("Default")
+projectAdder("Default",DateFormatter.currentDayPlusOne())
 

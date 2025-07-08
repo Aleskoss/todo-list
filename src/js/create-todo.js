@@ -18,9 +18,14 @@ const toDoChecker = {
       }
     })
 }}
-export function sortByPriority(currentProject){
+const prioritySetter = {
+  setPriority(currentToDo){
+    if(currentToDo.priority < 3) currentToDo.priority += 1
+  },
+  sortByPriority(currentProject){
     currentProject.toDos.sort((a,b) => b.priority - a.priority)
   }
+}
 const toDoFinder = {
   findToDo(currentProject,title){
     let currentToDo
@@ -33,4 +38,5 @@ const toDoFinder = {
   }
 }
 Object.assign(ToDo,toDoChecker)
+Object.assign(ToDo,prioritySetter)
 Object.assign(ToDo,toDoFinder)

@@ -24,7 +24,15 @@ export const projectOpener = (title) => {
   })
   return currentProject
 }
+const toDoSaver = {
+  saveToDos(currentProject,container){
+    currentProject.toDos.splice(0,currentProject.toDos.length)
+    container.forEach(element => {
+      currentProject.toDos.push(new ToDo(element.childNodes[0].value,element.childNodes[1].value,element.childNodes[2].value,element.childNodes[3].value))
+    });
+  }
+}
 
-
+Object.assign(Projects,toDoSaver)
 projectAdder("Default")
 

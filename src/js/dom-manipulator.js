@@ -3,8 +3,10 @@ import { ToDo, sortByPriority} from "./create-todo";
 export class DOMManipulator{
   static #currentProject
   content = document.querySelector('#content') 
+  static toDoContainer = document.createElement('div')
+  localStorage
   static loadProjects(){
-    this.#currentProject = ""
+    this.#currentProject = "default"
     this.addProject()
     for(let i = 0; i < Projects.projects.length; i++){
     let div = document.createElement('div')
@@ -15,14 +17,10 @@ export class DOMManipulator{
     }
   }
   static openProject(target){
-    if(this.#currentProject === "" && this.checkIfProjectInProjects(target)){
-       while(content.lastChild){
-        content.removeChild(content.lastChild)
-      }
+    if(this.checkIfProjectInProjects(target)){
+      Projects.saveToDos(projectOpener(this.#currentProject),this.toDoContainer.querySelectorAll('div'))
       this.#currentProject = target
       this.LoadToDos()
-      this.addToDoButton()
-      this.saveToDoButton()
       }
     }
   static checkIfProjectInProjects(target){
@@ -44,8 +42,8 @@ export class DOMManipulator{
     })
   }
   static LoadToDos(){
-     while(content.lastChild){
-        content.removeChild(content.lastChild)
+     while(this.toDoContainer.lastChild){
+        this.toDoContainer.removeChild(this.toDoContainer.lastChild)
       }
     let currentProject = projectOpener(this.#currentProject)
       currentProject.toDos.map(item => {
@@ -67,7 +65,7 @@ export class DOMManipulator{
         if(parseInt(event.target.value) < 3){
           event.target.value = parseInt(event.target.value) + 1
           this.saveToDos()
-          sortByPriority(projectOpener(this.#currentProject))
+          ToDo.sortByPriority(projectOpener(this.#currentProject))
           this.LoadToDos()
         }
       })
@@ -79,29 +77,13 @@ export class DOMManipulator{
       checkList.addEventListener('click', () => {
         this.checkIfChecked(checkList)
       })
+      document.body.appendChild(this.toDoContainer)
       toDoDiv.appendChild(title)
       toDoDiv.appendChild(description)
       toDoDiv.appendChild(priority)
       toDoDiv.appendChild(dueDate)
       toDoDiv.appendChild(checkList)
-      content.appendChild(toDoDiv)
-  }
-  static saveToDoButton(){
-    const saveBtn = document.createElement('button')
-    saveBtn.textContent = 'Save'
-    saveBtn.id = 'save-btn'
-    document.body.appendChild(saveBtn)
-    saveBtn.addEventListener('click',() => {
-      this.saveToDos()
-    })
-  }
-  static saveToDos(){
-    let containers = content.querySelectorAll('div')
-    let currentProject = projectOpener(this.#currentProject)
-    currentProject.toDos.splice(0,currentProject.toDos.length)
-    containers.forEach(element => {
-      currentProject.toDos.push(new ToDo(element.childNodes[0].value,element.childNodes[1].value,element.childNodes[2].value,element.childNodes[3].value))
-    });
+      this.toDoContainer.appendChild(toDoDiv)
   }
   static checkIfChecked(target){
     if(target.checked === true){

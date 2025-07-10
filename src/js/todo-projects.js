@@ -1,8 +1,8 @@
 import { ToDo } from "./create-todo"
-import { DateFormatter } from "./date-formatter"
+import { loadFromLocalStorage, saveToLocalStorage} from './local-storage'
 
 export class Projects {
-  static projects = []
+  static projects = loadFromLocalStorage() || []
   constructor(title,dueDate){
     this.title = title
     this.dueDate = dueDate
@@ -30,11 +30,10 @@ const toDoSaver = {
   saveToDos(currentProject,container){
     currentProject.toDos.splice(0,currentProject.toDos.length)
     container.forEach(element => {
-      currentProject.toDos.push(new ToDo(element.childNodes[0].value,element.childNodes[1].value,element.childNodes[2].value,element.childNodes[3].value))
+      currentProject.toDos.push(new ToDo(element.childNodes[1].value,element.childNodes[2].value,element.childNodes[3].value,element.childNodes[4].value,element.childNodes[0].checked))
     });
+    saveToLocalStorage()
   }
 }
 
 Object.assign(Projects,toDoSaver)
-projectAdder("Default",DateFormatter.currentDayPlusOne())
-

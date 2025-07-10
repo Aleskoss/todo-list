@@ -1,5 +1,7 @@
-import { Projects } from "./todo-projects"
+import { Projects,projectAdder } from "./todo-projects"
 export const saveToLocalStorage = () => {
-  localStorage.setItem(JSON.stringify(Projects.projects.toDos,savedData))
-
+  localStorage.setItem("projects",JSON.stringify(Projects.projects)) 
+}
+export const loadFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem("projects"))
 }

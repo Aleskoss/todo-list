@@ -1,12 +1,10 @@
-import { projects ,projectOpener } from "./todo-projects"
-
 export class ToDo{
-  constructor(title,description,priority,dueDate){
-    this.checkList = false
+  constructor(title,description,priority,dueDate,checkList){
     this.title = title
     this.description = description
     this.dueDate = dueDate
     this.priority = priority
+    this.checkList = checkList
   }
 }
 

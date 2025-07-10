@@ -8,11 +8,13 @@ export class DOMManipulator{
   static toDoContainer = document.createElement('div')
   localStorage
   static loadProjects(){
-    this.#currentProject = "default"
+    this.#currentProject = Projects.projects[0].title
+    this.LoadToDos()
     this.addProject()
+    this.addToDoButton()
     for(let i = 0; i < Projects.projects.length; i++){
     const currentDueDateArr = Projects.projects[i].dueDate.split('-')
-    const dateValue = new Date(currentDueDateArr[0],currentDueDateArr[1]-1,currentDueDateArr[2])
+    const dateValue = new Date(currentDueDateArr[0],currentDueDateArr[1],currentDueDateArr[2])
     const daysArr = ['Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota','Neděle']
     const div = document.createElement('div')
     const projectPara = document.createElement('p')
@@ -23,7 +25,7 @@ export class DOMManipulator{
     div.id = Projects.projects[i].title.toLowerCase()
     projectPara.textContent = Projects.projects[i].title.replace(Projects.projects[i].title[0],Projects.projects[i].title[0].toUpperCase())
     projectDueDatePara.textContent = currentDueDateArr.reverse().join('.')
-    if(isPast(dateValue)){
+    if(isPast(DateFormatter.currentDayPlus(1))){
       projectDueDatePara.style.color = 'red'
     }else{
       projectDueDatePara.style.color = 'green'
@@ -55,7 +57,7 @@ export class DOMManipulator{
     const addBtn = document.createElement('button')
     addBtn.textContent = 'Add ToDo'
     addBtn.id = 'add-btn'
-    document.body.appendChild(addBtn)
+    content.appendChild(addBtn)
     addBtn.addEventListener('click',() => {
       this.addToDoInputs()
     })
@@ -66,10 +68,10 @@ export class DOMManipulator{
       }
     let currentProject = projectOpener(this.#currentProject)
       currentProject.toDos.map(item => {
-      this.addToDoInputs(item.title,item.description,item.priority,item.dueDate)
+      this.addToDoInputs(item.title,item.description,item.priority,item.dueDate,item.checkList)
       })
   }
-  static addToDoInputs(titleValue = "",descriptionValue = "",priorityValue = 1,dueDateValue = ""){
+  static addToDoInputs(titleValue = "",descriptionValue = "",priorityValue = 1,dueDateValue = "",checkListValue = false){
     const toDoDiv = document.createElement('div')
       const title = document.createElement('input')
       title.type = 'text'
@@ -83,7 +85,7 @@ export class DOMManipulator{
       priority.addEventListener('click',(event)=>{
         if(parseInt(event.target.value) < 3){
           event.target.value = parseInt(event.target.value) + 1
-          this.saveToDos()
+          Projects.saveToDos(projectOpener(this.#currentProject),this.toDoContainer.querySelectorAll('div'))
           ToDo.sortByPriority(projectOpener(this.#currentProject))
           this.LoadToDos()
         }
@@ -93,21 +95,18 @@ export class DOMManipulator{
       dueDate.value = dueDateValue
       const checkList = document.createElement('input')
       checkList.type = 'radio'
-      checkList.addEventListener('click', () => {
-        this.checkIfChecked(checkList)
-      })
+      checkList.checked = checkListValue
+      const deleteBtn = document.createElement('button')
+      deleteBtn.textContent = 'Delete'
+      deleteBtn.addEventListener('click', (event) => event.target.parentNode.remove() )
       document.body.appendChild(this.toDoContainer)
+      toDoDiv.appendChild(checkList)
       toDoDiv.appendChild(title)
       toDoDiv.appendChild(description)
       toDoDiv.appendChild(priority)
       toDoDiv.appendChild(dueDate)
-      toDoDiv.appendChild(checkList)
+      toDoDiv.appendChild(deleteBtn)
       this.toDoContainer.appendChild(toDoDiv)
-  }
-  static checkIfChecked(target){
-    if(target.checked === true){
-      target.parentNode.remove()
-    }
   }
   static addProject(){
     const projectAddBtn = document.createElement('button')
@@ -116,7 +115,7 @@ export class DOMManipulator{
     projectName.name = 'project-name'
     const projectDueDate = document.createElement('input')
     projectDueDate.type = "date"
-    projectDueDate.value = DateFormatter.currentDayPlusOne()
+    projectDueDate.value = DateFormatter.currentDayPlus(1)
     content.appendChild(projectName)
     content.appendChild(projectDueDate)
     content.appendChild(projectAddBtn)

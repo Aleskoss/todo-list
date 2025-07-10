@@ -2,6 +2,7 @@ import { projectOpener, Projects, projectAdder} from "./todo-projects";
 import { ToDo } from "./create-todo";
 import { isPast, getDay } from "date-fns";
 import { DateFormatter } from "./date-formatter";
+import { saveToLocalStorage } from "./local-storage";
 export class DOMManipulator{
   static #currentProject
   content = document.querySelector('#content') 
@@ -17,14 +18,13 @@ export class DOMManipulator{
     const dateValue = new Date(currentDueDateArr[0],currentDueDateArr[1],currentDueDateArr[2])
     const daysArr = ['Pondělí','Úterý','Středa','Čtvrtek','Pátek','Sobota','Neděle']
     const div = document.createElement('div')
+    div.id = 'project'
     const projectPara = document.createElement('p')
-    const projectDueDatePara = document.createElement('p')
-    const dayOfTheDate = document.createElement('p')
-    div.style.width = '200px'
-    div.style.height = '200px'
-    div.id = Projects.projects[i].title.toLowerCase()
+    projectPara.id = Projects.projects[i].title.toLowerCase()
     projectPara.textContent = Projects.projects[i].title.replace(Projects.projects[i].title[0],Projects.projects[i].title[0].toUpperCase())
+    const projectDueDatePara = document.createElement('p')
     projectDueDatePara.textContent = currentDueDateArr.reverse().join('.')
+    const dayOfTheDate = document.createElement('p')
     if(isPast(DateFormatter.currentDayPlus(1))){
       projectDueDatePara.style.color = 'red'
     }else{
@@ -39,7 +39,7 @@ export class DOMManipulator{
   }
   static openProject(target){
     if(this.checkIfProjectInProjects(target)){
-      Projects.saveToDos(projectOpener(this.#currentProject),this.toDoContainer.querySelectorAll('div'))
+      Projects.saveToDos(projectOpener(this.#currentProject),this.toDoContainer.querySelectorAll('form'))
       this.#currentProject = target
       this.LoadToDos()
       }
@@ -60,6 +60,8 @@ export class DOMManipulator{
     content.appendChild(addBtn)
     addBtn.addEventListener('click',() => {
       this.addToDoInputs()
+      Projects.saveToDos(projectOpener(this.#currentProject),this.toDoContainer.querySelectorAll('form'))
+      saveToLocalStorage()
     })
   }
   static LoadToDos(){
@@ -72,7 +74,7 @@ export class DOMManipulator{
       })
   }
   static addToDoInputs(titleValue = "",descriptionValue = "",priorityValue = 1,dueDateValue = "",checkListValue = false){
-    const toDoDiv = document.createElement('div')
+    const toDoDiv = document.createElement('form')
       const title = document.createElement('input')
       title.type = 'text'
       title.value = titleValue
@@ -99,6 +101,7 @@ export class DOMManipulator{
       const deleteBtn = document.createElement('button')
       deleteBtn.textContent = 'Delete'
       deleteBtn.addEventListener('click', (event) => event.target.parentNode.remove() )
+      this.toDoContainer.id = 'todo-container'
       document.body.appendChild(this.toDoContainer)
       toDoDiv.appendChild(checkList)
       toDoDiv.appendChild(title)
@@ -109,18 +112,27 @@ export class DOMManipulator{
       this.toDoContainer.appendChild(toDoDiv)
   }
   static addProject(){
-    const projectAddBtn = document.createElement('button')
-    projectAddBtn.textContent = 'Add Project'
+    const modalBtn = document.createElement('button')
+    modalBtn.textContent = 'Add Project'
+    const form = document.createElement('form')
+    const dialog = document.createElement('dialog')
     const projectName = document.createElement('input')
     projectName.name = 'project-name'
     const projectDueDate = document.createElement('input')
     projectDueDate.type = "date"
     projectDueDate.value = DateFormatter.currentDayPlus(1)
-    content.appendChild(projectName)
-    content.appendChild(projectDueDate)
-    content.appendChild(projectAddBtn)
-    projectAddBtn.addEventListener('click',() => {
-      if(this.checkIfProjectInProjects(projectName.value) || !(projectName.value)){
+    form.appendChild(projectName)
+    form.appendChild(projectDueDate)
+    dialog.appendChild(form)
+    content.appendChild(dialog)
+    content.appendChild(modalBtn)
+    modalBtn.addEventListener('click',() => {
+      const projectAddBtn = document.createElement('button')
+      projectAddBtn.textContent = 'Add Project'
+      form.appendChild(projectAddBtn)
+      dialog.showModal()
+      projectAddBtn.addEventListener('click', () =>{
+        if(this.checkIfProjectInProjects(projectName.value) || !(projectName.value)){
         projectName.value = 'Try Again'
       }else{
         projectAdder(projectName.value,projectDueDate.value)
@@ -129,6 +141,7 @@ export class DOMManipulator{
         }
         this.loadProjects()
       }
+      })
     })
   }
 }

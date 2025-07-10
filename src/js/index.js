@@ -6,7 +6,6 @@ if(!(localStorage.getItem("projects"))){
     projectAdder("Default",DateFormatter.currentDayPlus(0))
 }
 DOMManipulator.loadProjects()
-
 document.addEventListener('click', event => {
 DOMManipulator.openProject(event.target.id)
 })

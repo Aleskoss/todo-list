@@ -11,7 +11,6 @@ export class DOMManipulator{
   static loadProjects(){
     this.#currentProject = Projects.projects[0].title
     this.LoadToDos()
-    ToDo.sortByPriority(projectOpener(this.#currentProject))
     this.addProject()
     this.addToDoButton()
     for(let i = 0; i < Projects.projects.length; i++){
@@ -90,6 +89,7 @@ export class DOMManipulator{
           event.target.value = parseInt(event.target.value) + 1
           Projects.saveToDos(projectOpener(this.#currentProject),this.toDoContainer.querySelectorAll('form'))
           ToDo.sortByPriority(projectOpener(this.#currentProject))
+          saveToLocalStorage()
           this.LoadToDos()
         }
       })

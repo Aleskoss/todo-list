@@ -11,6 +11,7 @@ export class DOMManipulator{
   static loadProjects(){
     this.#currentProject = Projects.projects[0].title
     this.LoadToDos()
+    ToDo.sortByPriority(projectOpener(this.#currentProject))
     this.addProject()
     this.addToDoButton()
     for(let i = 0; i < Projects.projects.length; i++){
@@ -87,7 +88,7 @@ export class DOMManipulator{
       priority.addEventListener('click',(event)=>{
         if(parseInt(event.target.value) < 3){
           event.target.value = parseInt(event.target.value) + 1
-          Projects.saveToDos(projectOpener(this.#currentProject),this.toDoContainer.querySelectorAll('div'))
+          Projects.saveToDos(projectOpener(this.#currentProject),this.toDoContainer.querySelectorAll('form'))
           ToDo.sortByPriority(projectOpener(this.#currentProject))
           this.LoadToDos()
         }

@@ -1,3 +1,4 @@
 import "../styles/style.css";
+import { DOMRender } from "./DOM.js";
 
-console.log("Hello World");
+DOMRender.renderProjects();

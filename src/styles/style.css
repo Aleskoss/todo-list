@@ -74,3 +74,36 @@ ol[role="list"] {
 #__next {
   isolation: isolate;
 }
+.sidebar {
+  display: grid;
+}
+
+.sidebar > .form-section {
+  order: 1;
+}
+#project-form {
+  display: none;
+}
+
+#project-form-opener {
+  appearance: none;
+}
+
+#project-form-opener + label {
+  width: 50px;
+  height: 50px;
+  display: block;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  transition: all 5s;
+}
+#project-form-opener + label:hover {
+  border: 1px solid black;
+  border-radius: 50%;
+  background-color: grey;
+}
+
+#project-form-opener:checked ~ #project-form {
+  display: block;
+}

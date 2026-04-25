@@ -12,18 +12,15 @@ const projectDatabase = (() => {
       ).toLocaleDateString(),
     ),
   ];
+  const chosenDateProjects = [];
 
   const addProject = (project) => {
     projects.push(project);
   };
 
   const getProject = (title) => {
-    for (const project of projects) {
-      if (project.title === title) {
-        return project;
-      }
-    }
-    return false;
+    const project = projects.find((proj) => proj.title === title);
+    return project;
   };
 
   const getAllProjects = () => {
@@ -31,27 +28,29 @@ const projectDatabase = (() => {
   };
 
   const returnChosenDateProject = (date) => {
-    const chosenDateProjects = [];
-    const project = chosenDateProjects.find(
-      (project) => project.title === date,
+    const formattedDate = new Date(date).toLocaleDateString();
+    let project = chosenDateProjects.find(
+      (project) => project.title === formattedDate,
     );
-    if (!project) {
-      chosenDateProjects.push(new TimedProject(new Date()));
-    }
 
-    for (const dateProject of chosenDateProjects) {
-      if (dateProject.title === date) {
-        for (project of projects) {
-          for (todo of project.toDos) {
-            if (todo.date === date) {
-              dateProject.addToDo(todo);
-            }
-          }
+    if (!project) {
+      project = new TimedProject(date);
+      chosenDateProjects.push(project);
+    }
+    for (const proj of projects)
+      for (const todo of proj.toDos) {
+        if (
+          todo.dueDate === formattedDate &&
+          !project.toDos.some((toDo) => todo.id === toDo.id)
+        ) {
+          console.log("yes");
+          project.addToDo(todo);
         }
       }
-    }
-    return dateProject;
+
+    return project;
   };
+
   return { addProject, getProject, getAllProjects, returnChosenDateProject };
 })();
 

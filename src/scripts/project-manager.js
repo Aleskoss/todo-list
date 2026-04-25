@@ -23,7 +23,7 @@ const toDoGetter = {
 
 const timedProjectToDoAdder = {
   addToDo(ToDo) {
-    if (ToDo.date === this.date && !this.toDos.includes(ToDo)) {
+    if (ToDo.date === this.date) {
       this.toDos.push(ToDo);
     }
   },

@@ -47,23 +47,26 @@ const DOMToDoRender = (() => {
       projectsContainer.appendChild(p);
     }
     sidebar.appendChild(projectsContainer);
-    renderToDos();
+    renderTitledProjects();
   }
 
-  function renderToDos() {
+  function renderTitledProjects() {
     const projectParas = document.querySelectorAll("#projects-div p");
     projectParas.forEach((p) =>
       p.addEventListener("click", () => {
-        removeContent(toDosContainer);
         const toDoArray = projectDatabase.getProject(p.textContent).toDos;
-        for (const item of toDoArray) {
-          toDosContainer.appendChild(renderTodo(item));
-        }
-        main.appendChild(toDosContainer);
+        renderToDos(toDoArray);
       }),
     );
   }
 
+  function renderToDos(toDoArray) {
+    removeContent(toDosContainer);
+    for (const item of toDoArray) {
+      toDosContainer.appendChild(renderTodo(item));
+    }
+    main.appendChild(toDosContainer);
+  }
   function addProject() {
     const projectForm = document.querySelector("#project-form");
     projectForm.addEventListener("submit", (e) => {
@@ -80,7 +83,11 @@ const DOMToDoRender = (() => {
   function renderDateProjects() {
     const dateInput = header.querySelector("#date-project-picker");
     dateInput.addEventListener("input", () => {
-      projectDatabase.returnChosenDateProject(dateInput.value);
+      const toDoArray = projectDatabase.returnChosenDateProject(
+        dateInput.value,
+      ).toDos;
+      console.log(toDoArray);
+      renderToDos(toDoArray);
     });
   }
 

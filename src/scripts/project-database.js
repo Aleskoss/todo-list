@@ -1,4 +1,4 @@
-import Project from "./project-manager.js";
+import { Project, TimedProject } from "./project-manager.js";
 
 const projectDatabase = (() => {
   const projects = [
@@ -30,7 +30,29 @@ const projectDatabase = (() => {
     return [...projects];
   };
 
-  return { addProject, getProject, getAllProjects };
+  const returnChosenDateProject = (date) => {
+    const chosenDateProjects = [];
+    const project = chosenDateProjects.find(
+      (project) => project.title === date,
+    );
+    if (!project) {
+      chosenDateProjects.push(new TimedProject(new Date()));
+    }
+
+    for (const dateProject of chosenDateProjects) {
+      if (dateProject.title === date) {
+        for (project of projects) {
+          for (todo of project.toDos) {
+            if (todo.date === date) {
+              dateProject.addToDo(todo);
+            }
+          }
+        }
+      }
+    }
+    return dateProject;
+  };
+  return { addProject, getProject, getAllProjects, returnChosenDateProject };
 })();
 
 export { projectDatabase };

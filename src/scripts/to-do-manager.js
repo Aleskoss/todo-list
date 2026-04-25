@@ -2,7 +2,7 @@ export default class ToDo {
   constructor(title, description, dueDate, status, priority = 1) {
     this.title = title;
     this.description = description;
-    this.dueDate = dueDate;
+    this.dueDate = new Date(dueDate).toLocaleDateString();
     this.priority = priority;
     this.id = crypto.randomUUID();
     this.status = false;

@@ -1,20 +1,24 @@
 import { projectDatabase } from "./project-database.js";
 import ToDo from "./to-do-manager.js";
-import Project from "./project-manager.js";
+import { Project, TimedProject } from "./project-manager.js";
 
 const DOMToDoRender = (() => {
   const bodyEle = document.body;
   const sidebar = document.querySelector(".sidebar");
   const main = document.querySelector("main");
+  const header = document.querySelector("header");
   const projectsContainer = document.createElement("div");
   projectsContainer.id = "projects-div";
   const toDosContainer = document.createElement("div");
   toDosContainer.id = "todos-container";
-  projectDatabase.getProject("Default").addToDo(new ToDo("s", "s", "s", false));
+  projectDatabase
+    .getProject("Default")
+    .addToDo(new ToDo("s", "s", "2026-04-25", false));
 
   const render = () => {
     addProject();
     renderProjects();
+    renderDateProjects();
   };
 
   function renderTodo(item) {
@@ -70,6 +74,13 @@ const DOMToDoRender = (() => {
       }
       projectDatabase.addProject(new Project(projectTitle));
       renderProjects();
+    });
+  }
+
+  function renderDateProjects() {
+    const dateInput = header.querySelector("#date-project-picker");
+    dateInput.addEventListener("input", () => {
+      projectDatabase.returnChosenDateProject(dateInput.value);
     });
   }
 

@@ -8,14 +8,11 @@ export default class ToDo {
     this.status = false;
   }
 
-  increasePriority() {
-    if (this.priority < 3) {
-      priority++;
-    }
-  }
-  decreasePriority() {
-    if (this.priority > 1) {
-      priority--;
+  changePriority(value) {
+    if (value < 3 || value > 1) {
+      this.priority = value;
+    } else {
+      return "Priority can be set in range 1 - 3";
     }
   }
   changeStatus() {

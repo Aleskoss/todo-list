@@ -13,7 +13,13 @@ const DOMToDoRender = (() => {
   toDosContainer.id = "todos-container";
   projectDatabase
     .getProject("Default")
-    .addToDo(new ToDo("s", "s", "2026-04-25", false));
+    .addToDo(new ToDo("Dokončit školu", "Description", "2026-04-25", false));
+  projectDatabase
+    .getProject("Default")
+    .addToDo(new ToDo("Title", "Description", "2026-04-28", false));
+  projectDatabase
+    .getProject("Default")
+    .addToDo(new ToDo("Title", "Description", "2026-04-25", false));
 
   const render = () => {
     addProject();
@@ -27,9 +33,17 @@ const DOMToDoRender = (() => {
     container.innerHTML = `
     <h2>${item.title}</h2>
     <p>${item.dueDate}</p>
-    <input name="status" id="status" type="checkbox" ${item.status ? "checked" : ""}>
-    <input name="priority" id="priority" type="number" value="${item.priority}">
+    <input  class="priority" type="number" value="${item.priority}" min="1" max="3">
+    <input  class="status" type="checkbox" ${item.status ? "checked" : ""}>
   `;
+
+    const priority = container.querySelector(".priority");
+    console.log(priority);
+    const status = container.querySelector(".status");
+    priority.addEventListener("input", () =>
+      item.changePriority(priority.value),
+    );
+    status.addEventListener("input", () => item.changeStatus());
     return container;
   }
 
@@ -86,7 +100,6 @@ const DOMToDoRender = (() => {
       const toDoArray = projectDatabase.returnChosenDateProject(
         dateInput.value,
       ).toDos;
-      console.log(toDoArray);
       renderToDos(toDoArray);
     });
   }

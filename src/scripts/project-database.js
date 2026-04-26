@@ -43,7 +43,6 @@ const projectDatabase = (() => {
           todo.dueDate === formattedDate &&
           !project.toDos.some((toDo) => todo.id === toDo.id)
         ) {
-          console.log("yes");
           project.addToDo(todo);
         }
       }

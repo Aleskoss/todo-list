@@ -8,6 +8,7 @@ const DOMToDoRender = (() => {
   const main = document.querySelector("main");
   const header = document.querySelector("header");
   const projectsContainer = document.createElement("div");
+  let currentProject = "";
   projectsContainer.id = "projects-div";
   const toDosContainer = document.createElement("div");
   toDosContainer.id = "todos-container";
@@ -35,11 +36,16 @@ const DOMToDoRender = (() => {
     <p>${item.dueDate}</p>
     <input  class="priority" type="number" value="${item.priority}" min="1" max="3">
     <input  class="status" type="checkbox" ${item.status ? "checked" : ""}>
+    <button class="remove">Remove</button>
   `;
 
     const priority = container.querySelector(".priority");
-    console.log(priority);
     const status = container.querySelector(".status");
+    const removeBtn = container.querySelector(".remove");
+    removeBtn.addEventListener("click", () => {
+      projectDatabase.getProject(currentProject).removeToDo(item);
+      renderToDos();
+    });
     priority.addEventListener("input", () =>
       item.changePriority(priority.value),
     );
@@ -68,6 +74,7 @@ const DOMToDoRender = (() => {
     const projectParas = document.querySelectorAll("#projects-div p");
     projectParas.forEach((p) =>
       p.addEventListener("click", () => {
+        currentProject = p.textContent;
         const toDoArray = projectDatabase.getProject(p.textContent).toDos;
         renderToDos(toDoArray);
       }),

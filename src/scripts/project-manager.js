@@ -21,6 +21,12 @@ const toDoGetter = {
   },
 };
 
+const toDoRemover = {
+  removeToDo(todo) {
+    this.toDos.splice(this.toDos.indexOf(todo), 1);
+  },
+};
+
 const timedProjectToDoAdder = {
   addToDo(ToDo) {
     if (ToDo.date === this.date) {
@@ -28,6 +34,7 @@ const timedProjectToDoAdder = {
     }
   },
 };
+
 class TimedProject extends Project {
   constructor(date) {
     super(new Date(date).toLocaleDateString());
@@ -36,6 +43,8 @@ class TimedProject extends Project {
 
 Object.assign(Project.prototype, toDoAdder);
 Object.assign(Project.prototype, toDoGetter);
+Object.assign(Project.prototype, toDoRemover);
 Object.assign(TimedProject.prototype, toDoGetter);
+Object.assign(TimedProject.prototype, toDoRemover);
 
 export { TimedProject, Project };

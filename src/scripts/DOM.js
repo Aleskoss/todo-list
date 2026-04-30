@@ -8,13 +8,20 @@ const DOMToDoRender = (() => {
   const main = document.querySelector("main");
   const header = document.querySelector("header");
   const projectsContainer = document.createElement("div");
-  let currentProject = "";
+  let currentProject, toDoArray;
   projectsContainer.id = "projects-div";
   const toDosContainer = document.createElement("div");
   toDosContainer.id = "todos-container";
   projectDatabase
     .getProject("Default")
-    .addToDo(new ToDo("Dokončit školu", "Description", "2026-04-25", false));
+    .addToDo(
+      new ToDo(
+        "Dokončit školu",
+        "Description Helo it is me",
+        "2026-04-25",
+        false,
+      ),
+    );
   projectDatabase
     .getProject("Default")
     .addToDo(new ToDo("Title", "Description", "2026-04-28", false));
@@ -36,20 +43,33 @@ const DOMToDoRender = (() => {
     <p>${item.dueDate}</p>
     <input  class="priority" type="number" value="${item.priority}" min="1" max="3">
     <input  class="status" type="checkbox" ${item.status ? "checked" : ""}>
-    <button class="remove">Remove</button>
+    <button class="remove">X</button>
+    <input type="checkbox" class="expand">
   `;
 
     const priority = container.querySelector(".priority");
     const status = container.querySelector(".status");
     const removeBtn = container.querySelector(".remove");
+    const expandCheckbox = container.querySelector(".expand");
     removeBtn.addEventListener("click", () => {
       projectDatabase.getProject(currentProject).removeToDo(item);
-      renderToDos();
+      renderToDos(toDoArray);
     });
-    priority.addEventListener("input", () =>
+    priority.addEventListener("change", () =>
       item.changePriority(priority.value),
     );
-    status.addEventListener("input", () => item.changeStatus());
+    status.addEventListener("change", () => item.changeStatus());
+    expandCheckbox.addEventListener("change", () => {
+      if (expandCheckbox.checked) {
+        const descriptionP = document.createElement("textarea");
+        descriptionP.classList = "description";
+        descriptionP.textContent = item.description;
+        container.appendChild(descriptionP);
+      } else {
+        item.description = container.querySelector(".description").value;
+        container.removeChild(container.lastChild);
+      }
+    });
     return container;
   }
 
@@ -75,7 +95,7 @@ const DOMToDoRender = (() => {
     projectParas.forEach((p) =>
       p.addEventListener("click", () => {
         currentProject = p.textContent;
-        const toDoArray = projectDatabase.getProject(p.textContent).toDos;
+        toDoArray = projectDatabase.getProject(p.textContent).toDos;
         renderToDos(toDoArray);
       }),
     );
@@ -104,7 +124,7 @@ const DOMToDoRender = (() => {
   function renderDateProjects() {
     const dateInput = header.querySelector("#date-project-picker");
     dateInput.addEventListener("input", () => {
-      const toDoArray = projectDatabase.returnChosenDateProject(
+      toDoArray = projectDatabase.returnChosenDateProject(
         dateInput.value,
       ).toDos;
       renderToDos(toDoArray);
